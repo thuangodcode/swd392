@@ -60,7 +60,7 @@ const Groups = () => {
       }
 
       // Get groups
-      const groupsRes = await axios.get(`/api/groups/class/${user.currentClass}`);
+      const groupsRes = await axios.get(`/groups/class/${user.currentClass}`);
       setGroups(groupsRes.data.data || []);
 
       // Get my status
@@ -86,7 +86,7 @@ const Groups = () => {
     try {
       if (!user?.currentClass) return;
       
-      const response = await axios.get(`/api/users/class/${user.currentClass}`);
+      const response = await axios.get(`/users/class/${user.currentClass}`);
       setAllStudentsInClass(response.data.data || []);
     } catch (error) {
       console.error('Failed to fetch students:', error);
@@ -105,7 +105,7 @@ const Groups = () => {
       const groupsData = {};
       for (const classItem of myClasses) {
         try {
-          const groupsRes = await axios.get(`/api/groups/class/${classItem.classCode}/public`);
+          const groupsRes = await axios.get(`/groups/class/${classItem.classCode}/public`);
           groupsData[classItem.classCode] = groupsRes.data.data || [];
         } catch (error) {
           console.error(`Failed to fetch groups for ${classItem.classCode}:`, error);
@@ -122,7 +122,7 @@ const Groups = () => {
 
   const fetchGroupProject = async (groupId) => {
     try {
-      const response = await axios.get(`/api/projects/group/${groupId}`);
+      const response = await axios.get(`/projects/group/${groupId}`);
       setSelectedGroupProject(response.data.data);
     } catch (error) {
       if (error.response?.status !== 404) {
@@ -166,7 +166,7 @@ const Groups = () => {
 
   const handleInviteStudent = async (values) => {
     try {
-      await axios.post(`/api/groups/${selectedGroup._id}/invite`, {
+      await axios.post(`/groups/${selectedGroup._id}/invite`, {
         studentId: values.studentId
       });
 
@@ -187,7 +187,7 @@ const Groups = () => {
 
   const handleAcceptInvite = async (groupId) => {
     try {
-      await axios.post(`/api/groups/${groupId}/accept-invite`);
+      await axios.post(`/groups/${groupId}/accept-invite`);
       message.success('Joined group successfully');
       await refreshUser(); // Refresh user to update currentGroup
       fetchGroupsAndStatus();
@@ -198,7 +198,7 @@ const Groups = () => {
 
   const handleRejectInvite = async (groupId) => {
     try {
-      await axios.post(`/api/groups/${groupId}/reject-invite`);
+      await axios.post(`/groups/${groupId}/reject-invite`);
       message.success('Invitation rejected');
       fetchGroupsAndStatus();
     } catch (error) {
@@ -208,7 +208,7 @@ const Groups = () => {
 
   const handleLeaveGroup = async () => {
     try {
-      await axios.post(`/api/groups/${myStatus.currentGroup?._id}/leave`);
+      await axios.post(`/groups/${myStatus.currentGroup?._id}/leave`);
       message.success('Left group successfully');
       await refreshUser(); // Refresh user to update currentGroup
       fetchGroupsAndStatus();
@@ -219,7 +219,7 @@ const Groups = () => {
 
   const handleRequestJoin = async (groupId) => {
     try {
-      await axios.post(`/api/groups/${groupId}/request`);
+      await axios.post(`/groups/${groupId}/request`);
       message.success('Join request sent successfully');
       fetchGroupsAndStatus();
     } catch (error) {
@@ -229,7 +229,7 @@ const Groups = () => {
 
   const handleCancelRequest = async (groupId) => {
     try {
-      await axios.post(`/api/groups/${groupId}/cancel-request`);
+      await axios.post(`/groups/${groupId}/cancel-request`);
       message.success('Request cancelled successfully');
       fetchGroupsAndStatus();
     } catch (error) {
@@ -239,7 +239,7 @@ const Groups = () => {
 
   const handleAcceptRequest = async (groupId, userId) => {
     try {
-      await axios.post(`/api/groups/${groupId}/accept-request/${userId}`);
+      await axios.post(`/groups/${groupId}/accept-request/${userId}`);
       message.success('Request accepted successfully');
       fetchGroupsAndStatus();
     } catch (error) {
@@ -249,7 +249,7 @@ const Groups = () => {
 
   const handleRejectRequest = async (groupId, userId) => {
     try {
-      await axios.post(`/api/groups/${groupId}/reject-request/${userId}`);
+      await axios.post(`/groups/${groupId}/reject-request/${userId}`);
       message.success('Request rejected successfully');
       fetchGroupsAndStatus();
     } catch (error) {
@@ -269,7 +269,7 @@ const Groups = () => {
         return;
       }
 
-      await axios.post(`/api/groups/${myStatus.currentGroup._id}/invite`, {
+      await axios.post(`/groups/${myStatus.currentGroup._id}/invite`, {
         studentId: studentId
       });
 

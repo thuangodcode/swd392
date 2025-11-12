@@ -51,7 +51,7 @@ const Lecturers = () => {
       if (editingId) {
         // Update
         const { password, ...updateData } = values;
-        const response = await axios.put(`/api/users/lecturer/${editingId}`, updateData);
+        const response = await axios.put(`/users/lecturer/${editingId}`, updateData);
         if (response.data.success) {
           message.success('Lecturer updated successfully');
           setEditingId(null);
@@ -74,7 +74,7 @@ const Lecturers = () => {
   // Handle delete lecturer
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`/api/users/lecturer/${id}`);
+      const response = await axios.delete(`/users/lecturer/${id}`);
       if (response.data.success) {
         message.success('Lecturer deleted successfully');
         fetchLecturers();

@@ -87,7 +87,7 @@ const Projects = () => {
       // Fetch project for my group
       if (response.data.data.currentGroup) {
         try {
-          const projectRes = await axios.get(`/api/projects/group/${response.data.data.currentGroup._id}`);
+          const projectRes = await axios.get(`/projects/group/${response.data.data.currentGroup._id}`);
           setMyProject(projectRes.data.data);
         } catch (error) {
           if (error.response?.status !== 404) {
@@ -158,7 +158,7 @@ const Projects = () => {
 
   const handleUpdateProject = async (values) => {
     try {
-      await axios.put(`/api/projects/${myProject._id}`, {
+      await axios.put(`/projects/${myProject._id}`, {
         projectName: values.projectName,
         description: values.description,
         objectives: values.objectives,
@@ -184,7 +184,7 @@ const Projects = () => {
       cancelText: 'Cancel',
       onOk: async () => {
         try {
-          await axios.post(`/api/projects/${myProject._id}/submit-for-approval`);
+          await axios.post(`/projects/${myProject._id}/submit-for-approval`);
           message.success('Project submitted to lecturer for approval');
           fetchMyGroup();
         } catch (error) {
@@ -203,7 +203,7 @@ const Projects = () => {
           layout="vertical"
           onFinish={async (values) => {
             try {
-              await axios.post(`/api/projects/${projectId}/approve`, {
+              await axios.post(`/projects/${projectId}/approve`, {
                 comment: values.comment
               });
               message.success('Project approved successfully');
@@ -238,7 +238,7 @@ const Projects = () => {
           layout="vertical"
           onFinish={async (values) => {
             try {
-              await axios.post(`/api/projects/${projectId}/reject`, {
+              await axios.post(`/projects/${projectId}/reject`, {
                 comment: values.comment
               });
               message.success('Project rejected');
@@ -276,7 +276,7 @@ const Projects = () => {
       cancelText: 'Cancel',
       onOk: async () => {
         try {
-          await axios.delete(`/api/projects/${myProject._id}`);
+          await axios.delete(`/projects/${myProject._id}`);
           message.success('Project deleted successfully');
           fetchMyGroup();
         } catch (error) {

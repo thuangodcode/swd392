@@ -104,7 +104,7 @@ const Courses = () => {
 
   const handleEnroll = async (courseId) => {
     try {
-      await axios.post(`/api/courses/${courseId}/enroll`);
+      await axios.post(`/courses/${courseId}/enroll`);
       message.success('Enrolled successfully');
       await refreshUser(); // Refresh user data to update currentClass
       fetchCourses();
@@ -134,7 +134,7 @@ const Courses = () => {
       width: 500,
       onOk: async () => {
         try {
-          await axios.post(`/api/courses/${courseId}/switch`);
+          await axios.post(`/courses/${courseId}/switch`);
           message.success('Switched class successfully');
           await refreshUser(); // Refresh user data to update currentClass
           fetchCourses();
@@ -157,11 +157,11 @@ const Courses = () => {
     setLoadingDetails(true);
     try {
       // Fetch students in this class
-      const studentsRes = await axios.get(`/api/users/class/${classCode}`);
+      const studentsRes = await axios.get(`/users/class/${classCode}`);
       setClassStudents(studentsRes.data.data || []);
 
       // Fetch groups in this class
-      const groupsRes = await axios.get(`/api/groups/class/${classCode}/public`);
+      const groupsRes = await axios.get(`/groups/class/${classCode}/public`);
       setClassGroups(groupsRes.data.data || []);
     } catch (error) {
       console.error('Failed to fetch class details:', error);
@@ -207,7 +207,7 @@ const Courses = () => {
 
       const slotTimes = slotMap[values.slot] || slotMap.slot1;
 
-      await axios.put(`/api/courses/${selectedCourse._id}`, {
+      await axios.put(`/courses/${selectedCourse._id}`, {
         classCode: values.classCode.toUpperCase(),
         lecturerId: values.lecturerId,
         semester: values.semester.toUpperCase(),
