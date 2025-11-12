@@ -70,7 +70,7 @@ const Projects = () => {
   const checkAIStatus = async () => {
     try {
       const response = await axios.get('/ai/status');
-      setAiEnabled(response.data.data.enabled);
+      setAiEnabled(response.data?.data?.enabled || false);
     } catch (error) {
       console.error('Failed to check AI status:', error);
       setAiEnabled(false);
@@ -79,7 +79,7 @@ const Projects = () => {
 
   const fetchMyGroup = async () => {
     try {
-      if (!user.currentGroup) return;
+      if (!user?.currentGroup) return;
       
       const response = await axios.get('/groups/my/status');
       setMyGroup(response.data.data.currentGroup);
