@@ -113,13 +113,6 @@ const Courses = () => {
     }
   };
 
-  // Removed unused handleUnenroll function
-
-  const handleDelete = async (courseId) => {
-      message.error(error.response?.data?.message || 'Failed to unenroll');
-    }
-  };
-
   const handleSwitchClass = async (courseId) => {
     Modal.confirm({
       title: 'Switch Class Confirmation',

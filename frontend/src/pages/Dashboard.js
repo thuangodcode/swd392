@@ -7,7 +7,6 @@ import axios from 'axios';
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const getRoleLabel = (role) => {
     const roles = {
