@@ -6,7 +6,15 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000', 
+    'https://german-unlotted-jeanmarie.ngrok-free.dev',
+    /\.vercel\.app$/,  // Allow any Vercel deployment
+    /\.netlify\.app$/  // Allow any Netlify deployment
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

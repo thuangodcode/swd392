@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Statistic, Row, Col, Button, Tabs, Table, message, Space, Popconfirm, Tag, Modal, Form, Input, Select } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Card, Statistic, Row, Col, Button, Tabs, Table, message, Tag } from 'antd';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,11 +8,6 @@ import axios from 'axios';
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [lecturers, setLecturers] = useState([]);
-  const [classes, setClasses] = useState([]);
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
 
   const getRoleLabel = (role) => {
     const roles = {

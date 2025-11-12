@@ -1,7 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import axios from 'axios';
 import 'antd/dist/reset.css';
+
+// Configure API base URL
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+axios.defaults.baseURL = API_URL;
+console.log('🌐 API URL:', API_URL);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

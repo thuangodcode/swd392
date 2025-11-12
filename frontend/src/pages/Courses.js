@@ -113,12 +113,9 @@ const Courses = () => {
     }
   };
 
-  const handleUnenroll = async (courseId) => {
-    try {
-      await axios.post(`/api/courses/${courseId}/unenroll`);
-      message.success('Unenrolled successfully');
-      fetchCourses();
-    } catch (error) {
+  // Removed unused handleUnenroll function
+
+  const handleDelete = async (courseId) => {
       message.error(error.response?.data?.message || 'Failed to unenroll');
     }
   };
