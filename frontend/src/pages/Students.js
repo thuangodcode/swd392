@@ -61,7 +61,7 @@ const Students = () => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/users/students/all');
+      const response = await axios.get('/users/students/all');
       const studentData = response.data.data || [];
       setStudents(studentData);
 

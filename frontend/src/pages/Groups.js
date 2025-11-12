@@ -64,7 +64,7 @@ const Groups = () => {
       setGroups(groupsRes.data.data || []);
 
       // Get my status
-      const statusRes = await axios.get('/api/groups/my/status');
+      const statusRes = await axios.get('/groups/my/status');
       setMyStatus(statusRes.data.data || {});
     } catch (error) {
       message.error('Failed to fetch groups');
@@ -75,7 +75,7 @@ const Groups = () => {
 
   const fetchAvailableStudents = async () => {
     try {
-      const response = await axios.get('/api/groups/available/students');
+      const response = await axios.get('/groups/available/students');
       setAvailableStudents(response.data.data || []);
     } catch (error) {
       message.error('Failed to fetch available students');
@@ -97,7 +97,7 @@ const Groups = () => {
     setLoading(true);
     try {
       // Get all courses taught by this lecturer
-      const coursesRes = await axios.get('/api/courses/available');
+      const coursesRes = await axios.get('/courses/available');
       const myClasses = coursesRes.data.data?.filter(c => c.lecturer?._id === user.id) || [];
       setLecturerClasses(myClasses);
 
@@ -141,7 +141,7 @@ const Groups = () => {
   const handleCreateGroup = async (values) => {
     try {
       // Find the course ID for current class
-      const coursesRes = await axios.get('/api/courses/available');
+      const coursesRes = await axios.get('/courses/available');
       const currentCourse = coursesRes.data.data?.find(c => c.classCode === user.currentClass);
 
       if (!currentCourse) {
@@ -149,7 +149,7 @@ const Groups = () => {
         return;
       }
 
-      await axios.post('/api/groups', {
+      await axios.post('/groups', {
         groupName: values.groupName,
         courseId: currentCourse._id
       });

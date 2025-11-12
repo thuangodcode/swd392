@@ -91,8 +91,8 @@ const ModeratorDashboard = ({ user }) => {
   const fetchStats = async () => {
     try {
       const [lecturersRes, classesRes] = await Promise.all([
-        axios.get('/api/users/lecturer/all'),
-        axios.get('/api/courses/available')
+        axios.get('/users/lecturer/all'),
+        axios.get('/courses/available')
       ]);
 
       const lecturersData = lecturersRes.data.data || [];

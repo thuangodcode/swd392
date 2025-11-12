@@ -69,7 +69,7 @@ const Projects = () => {
 
   const checkAIStatus = async () => {
     try {
-      const response = await axios.get('/api/ai/status');
+      const response = await axios.get('/ai/status');
       setAiEnabled(response.data.data.enabled);
     } catch (error) {
       console.error('Failed to check AI status:', error);
@@ -81,7 +81,7 @@ const Projects = () => {
     try {
       if (!user.currentGroup) return;
       
-      const response = await axios.get('/api/groups/my/status');
+      const response = await axios.get('/groups/my/status');
       setMyGroup(response.data.data.currentGroup);
 
       // Fetch project for my group
@@ -103,7 +103,7 @@ const Projects = () => {
   const fetchClassProjects = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/projects/my-class');
+      const response = await axios.get('/projects/my-class');
       setClassProjects(response.data.data || []);
     } catch (error) {
       message.error('Failed to fetch class projects');
@@ -115,7 +115,7 @@ const Projects = () => {
   const fetchPendingProjects = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/projects/pending-approval');
+      const response = await axios.get('/projects/pending-approval');
       setPendingProjects(response.data.data || []);
     } catch (error) {
       message.error('Failed to fetch pending projects');
@@ -127,7 +127,7 @@ const Projects = () => {
   const fetchAllMyClassProjects = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/projects/my-classes');
+      const response = await axios.get('/projects/my-classes');
       setAllProjects(response.data.data || []);
     } catch (error) {
       message.error('Failed to fetch projects');
@@ -138,7 +138,7 @@ const Projects = () => {
 
   const handleCreateProject = async (values) => {
     try {
-      await axios.post('/api/projects', {
+      await axios.post('/projects', {
         groupId: myGroup._id,
         projectName: values.projectName,
         description: values.description,
@@ -298,7 +298,7 @@ const Projects = () => {
 
     setAiLoading(true);
     try {
-      const response = await axios.post('/api/ai/generate-description', {
+      const response = await axios.post('/ai/generate-description', {
         projectName: projectName,
         techStack: techStack || '',
         additionalInfo: ''
@@ -347,7 +347,7 @@ const Projects = () => {
 
     setAiLoading(true);
     try {
-      const response = await axios.post('/api/ai/improve-description', {
+      const response = await axios.post('/ai/improve-description', {
         description: currentDescription
       });
 
@@ -373,7 +373,7 @@ const Projects = () => {
 
     setAiLoading(true);
     try {
-      const response = await axios.post('/api/ai/generate-objectives', {
+      const response = await axios.post('/ai/generate-objectives', {
         description: description
       });
 

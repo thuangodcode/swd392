@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       if (savedToken) {
         try {
           axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-          const response = await axios.get('/api/auth/me');
+          const response = await axios.get('/auth/me');
           setUser(response.data.user);
           setToken(savedToken);
         } catch (error) {
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post('/auth/login', { email, password });
       const { token, user } = response.data;
       setToken(token);
       setUser(user);
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (studentId, email, password, fullName, role, studentCourse, major) => {
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/register', {
+      const response = await axios.post('/auth/register', {
         studentId,
         email,
         password,
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
 
   const refreshUser = async () => {
     try {
-      const response = await axios.get('/api/auth/me');
+      const response = await axios.get('/auth/me');
       setUser({ ...response.data.user }); // Create new object reference
       return response.data.user;
     } catch (error) {

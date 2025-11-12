@@ -30,7 +30,7 @@ const Lecturers = () => {
   const fetchLecturers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/users/lecturer/all');
+      const response = await axios.get('/users/lecturer/all');
       if (response.data.success) {
         setLecturers(response.data.data);
       }
@@ -58,7 +58,7 @@ const Lecturers = () => {
         }
       } else {
         // Create
-        const response = await axios.post('/api/users/lecturer/create', values);
+        const response = await axios.post('/users/lecturer/create', values);
         if (response.data.success) {
           message.success('Lecturer created successfully');
         }

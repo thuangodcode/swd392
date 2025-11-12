@@ -31,7 +31,7 @@ const Courses = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/courses/available');
+      const response = await axios.get('/courses/available');
       setCourses(response.data.data || []);
     } catch (error) {
       message.error('Failed to fetch classes');
@@ -42,7 +42,7 @@ const Courses = () => {
 
   const fetchLecturers = async () => {
     try {
-      const response = await axios.get('/api/courses/lecturers/list');
+      const response = await axios.get('/courses/lecturers/list');
       setLecturers(response.data.data || []);
     } catch (error) {
       console.error('Failed to fetch lecturers:', error);
@@ -69,7 +69,7 @@ const Courses = () => {
 
       const slotTimes = slotMap[values.slot] || slotMap.slot1;
 
-      await axios.post('/api/courses', {
+      await axios.post('/courses', {
         classCode: values.classCode.toUpperCase(),
         lecturerId: values.lecturerId,
         semester: values.semester.toUpperCase(),
