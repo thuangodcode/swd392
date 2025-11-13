@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "buildCommand": "cd frontend && npm run build",
+  "installCommand": "cd frontend && npm install",
+  "outputDirectory": "frontend/build",
+  "env": {
+    "REACT_APP_API_URL": "@react_app_api_url"
+  }
+}
