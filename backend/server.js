@@ -34,6 +34,15 @@ app.use('/api/groups', require('./routes/groups'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/ai', require('./routes/ai'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'EXE101 Group Management API',
+    status: 'running',
+    version: '1.0.0'
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
