@@ -6,15 +6,17 @@ import {
   Form,
   Input,
   Space,
-  message,
   Popconfirm,
   Tag,
   Drawer,
   Select
 } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { motion } from 'framer-motion';
+import { Users, Plus, User } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Lecturers = () => {
   const { user } = useAuth();
@@ -35,7 +37,7 @@ const Lecturers = () => {
         setLecturers(response.data.data);
       }
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to fetch lecturers');
+      toast.error(error.response?.data?.message || 'Failed to fetch lecturers');
     } finally {
       setLoading(false);
     }
@@ -53,21 +55,21 @@ const Lecturers = () => {
         const { password, ...updateData } = values;
         const response = await axios.put(`/users/lecturer/${editingId}`, updateData);
         if (response.data.success) {
-          message.success('Lecturer updated successfully');
+          toast.success('Lecturer updated successfully');
           setEditingId(null);
         }
       } else {
         // Create
         const response = await axios.post('/users/lecturer/create', values);
         if (response.data.success) {
-          message.success('Lecturer created successfully');
+          toast.success('Lecturer created successfully');
         }
       }
       form.resetFields();
       setIsModalVisible(false);
       fetchLecturers();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to save lecturer');
+      toast.error(error.response?.data?.message || 'Failed to save lecturer');
     }
   };
 
@@ -76,11 +78,11 @@ const Lecturers = () => {
     try {
       const response = await axios.delete(`/users/lecturer/${id}`);
       if (response.data.success) {
-        message.success('Lecturer deleted successfully');
+        toast.success('Lecturer deleted successfully');
         fetchLecturers();
       }
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to delete lecturer');
+      toast.error(error.response?.data?.message || 'Failed to delete lecturer');
     }
   };
 
@@ -194,25 +196,56 @@ const Lecturers = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Lecturer Management</h1>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleOpenCreateModal}
+    <div 
+      className="min-vh-100" 
+      style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+    >
+      <div className="container py-5">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          Create Lecturer
-        </Button>
-      </div>
+          {/* Header Card */}
+          <div className="card border-0 shadow-lg rounded-4 mb-4 p-4">
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center gap-3">
+                <div 
+                  className="d-flex align-items-center justify-content-center rounded-3 shadow-sm"
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  }}
+                >
+                  <Users size={36} color="white" />
+                </div>
+                <div>
+                  <h1 className="h2 fw-bold mb-1">Lecturer Management</h1>
+                  <p className="text-muted mb-0">Manage and monitor lecturers</p>
+                </div>
+              </div>
+              <Button
+                type="primary"
+                icon={<Plus size={18} />}
+                onClick={handleOpenCreateModal}
+                size="large"
+              >
+                Create Lecturer
+              </Button>
+            </div>
+          </div>
 
-      <Table
-        columns={columns}
-        dataSource={lecturers}
-        rowKey="_id"
-        loading={loading}
-        pagination={{ pageSize: 10 }}
-      />
+          {/* Table Card */}
+          <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <Table
+              columns={columns}
+              dataSource={lecturers}
+              rowKey="_id"
+              loading={loading}
+              pagination={{ pageSize: 10 }}
+            />
+          </div>
 
       {/* Create/Edit Modal */}
       <Modal
@@ -345,8 +378,11 @@ const Lecturers = () => {
           </div>
         )}
       </Drawer>
+        </motion.div>
+      </div>
     </div>
   );
 };
 
 export default Lecturers;
+

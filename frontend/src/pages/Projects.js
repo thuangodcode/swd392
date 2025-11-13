@@ -30,9 +30,12 @@ import {
   ThunderboltOutlined,
   RobotOutlined
 } from '@ant-design/icons';
+import { motion } from 'framer-motion';
+import { FolderKanban, Plus, Sparkles, Eye } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const { TextArea } = Input;
 
@@ -106,7 +109,7 @@ const Projects = () => {
       const response = await axios.get('/projects/my-class');
       setClassProjects(response.data.data || []);
     } catch (error) {
-      message.error('Failed to fetch class projects');
+      toast.error('Failed to fetch class projects');
     } finally {
       setLoading(false);
     }
@@ -118,7 +121,7 @@ const Projects = () => {
       const response = await axios.get('/projects/pending-approval');
       setPendingProjects(response.data.data || []);
     } catch (error) {
-      message.error('Failed to fetch pending projects');
+      toast.error('Failed to fetch pending projects');
     } finally {
       setLoading(false);
     }
@@ -130,7 +133,7 @@ const Projects = () => {
       const response = await axios.get('/projects/my-classes');
       setAllProjects(response.data.data || []);
     } catch (error) {
-      message.error('Failed to fetch projects');
+      toast.error('Failed to fetch projects');
     } finally {
       setLoading(false);
     }
@@ -147,12 +150,12 @@ const Projects = () => {
         githubRepository: values.githubRepository
       });
 
-      message.success('Project created successfully');
+      toast.success('Project created successfully');
       setIsCreateModalVisible(false);
       form.resetFields();
       fetchMyGroup();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to create project');
+      toast.error(error.response?.data?.message || 'Failed to create project');
     }
   };
 
@@ -166,12 +169,12 @@ const Projects = () => {
         githubRepository: values.githubRepository
       });
 
-      message.success('Project updated successfully');
+      toast.success('Project updated successfully');
       setIsEditModalVisible(false);
       form.resetFields();
       fetchMyGroup();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to update project');
+      toast.error(error.response?.data?.message || 'Failed to update project');
     }
   };
 
@@ -185,10 +188,10 @@ const Projects = () => {
       onOk: async () => {
         try {
           await axios.post(`/projects/${myProject._id}/submit-for-approval`);
-          message.success('Project submitted to lecturer for approval');
+          toast.success('Project submitted to lecturer for approval');
           fetchMyGroup();
         } catch (error) {
-          message.error(error.response?.data?.message || 'Failed to submit project');
+          toast.error(error.response?.data?.message || 'Failed to submit project');
         }
       }
     });
@@ -206,12 +209,12 @@ const Projects = () => {
               await axios.post(`/projects/${projectId}/approve`, {
                 comment: values.comment
               });
-              message.success('Project approved successfully');
+              toast.success('Project approved successfully');
               Modal.destroyAll();
               fetchPendingProjects();
               fetchAllMyClassProjects();
             } catch (error) {
-              message.error(error.response?.data?.message || 'Failed to approve project');
+              toast.error(error.response?.data?.message || 'Failed to approve project');
             }
           }}
         >
@@ -241,12 +244,12 @@ const Projects = () => {
               await axios.post(`/projects/${projectId}/reject`, {
                 comment: values.comment
               });
-              message.success('Project rejected');
+              toast.success('Project rejected');
               Modal.destroyAll();
               fetchPendingProjects();
               fetchAllMyClassProjects();
             } catch (error) {
-              message.error(error.response?.data?.message || 'Failed to reject project');
+              toast.error(error.response?.data?.message || 'Failed to reject project');
             }
           }}
         >
@@ -277,10 +280,10 @@ const Projects = () => {
       onOk: async () => {
         try {
           await axios.delete(`/projects/${myProject._id}`);
-          message.success('Project deleted successfully');
+          toast.success('Project deleted successfully');
           fetchMyGroup();
         } catch (error) {
-          message.error(error.response?.data?.message || 'Failed to delete project');
+          toast.error(error.response?.data?.message || 'Failed to delete project');
         }
       }
     });
@@ -292,7 +295,7 @@ const Projects = () => {
     const techStack = form.getFieldValue('techStack');
 
     if (!projectName || projectName.trim() === '') {
-      message.warning('Please enter a project name first');
+      toast.error('Please enter a project name first');
       return;
     }
 
@@ -329,9 +332,9 @@ const Projects = () => {
         });
       }
 
-      message.success('AI generated description successfully!');
+      toast.success('AI generated description successfully!');
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to generate description');
+      toast.error(error.response?.data?.message || 'Failed to generate description');
     } finally {
       setAiLoading(false);
     }
@@ -341,7 +344,7 @@ const Projects = () => {
     const currentDescription = form.getFieldValue('description');
 
     if (!currentDescription || currentDescription.trim() === '') {
-      message.warning('Please enter a description first');
+      toast.error('Please enter a description first');
       return;
     }
 
@@ -355,9 +358,9 @@ const Projects = () => {
         description: response.data.data.improvedDescription
       });
 
-      message.success('Description improved!');
+      toast.success('Description improved!');
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to improve description');
+      toast.error(error.response?.data?.message || 'Failed to improve description');
     } finally {
       setAiLoading(false);
     }
@@ -367,7 +370,7 @@ const Projects = () => {
     const description = form.getFieldValue('description');
 
     if (!description || description.trim() === '') {
-      message.warning('Please enter a description first');
+      toast.error('Please enter a description first');
       return;
     }
 
@@ -381,9 +384,9 @@ const Projects = () => {
         objectives: response.data.data.objectives
       });
 
-      message.success('Objectives generated!');
+      toast.success('Objectives generated!');
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to generate objectives');
+      toast.error(error.response?.data?.message || 'Failed to generate objectives');
     } finally {
       setAiLoading(false);
     }
@@ -469,10 +472,42 @@ const Projects = () => {
     const isLeader = myGroup?.leader?._id === user.id;
 
     return (
-      <div style={{ padding: '20px' }}>
-        <Spin spinning={loading}>
-          <Tabs
-            items={[
+      <div 
+        className="min-vh-100" 
+        style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+      >
+        <div className="container py-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Header Card */}
+            <div className="card border-0 shadow-lg rounded-4 mb-4 p-4">
+              <div className="d-flex align-items-center gap-3">
+                <div 
+                  className="d-flex align-items-center justify-content-center rounded-3 shadow-sm"
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  }}
+                >
+                  <FolderKanban size={36} color="white" />
+                </div>
+                <div>
+                  <h1 className="h2 fw-bold mb-1">Projects</h1>
+                  <p className="text-muted mb-0">Manage and submit your group projects</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content Card */}
+            <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+              <Spin spinning={loading}>
+                <Tabs
+                  className="p-4"
+                  items={[
               {
                 key: 'my-project',
                 label: 'My Group Project',
@@ -588,6 +623,7 @@ const Projects = () => {
             ]}
           />
         </Spin>
+            </div>
 
         {/* Create Project Modal */}
         <Modal
@@ -912,6 +948,8 @@ const Projects = () => {
             </div>
           )}
         </Drawer>
+          </motion.div>
+        </div>
       </div>
     );
   }
@@ -919,10 +957,42 @@ const Projects = () => {
   // Lecturer View
   if (user?.role === 'lecturer') {
     return (
-      <div style={{ padding: '20px' }}>
-        <Spin spinning={loading}>
-          <Tabs
-            items={[
+      <div 
+        className="min-vh-100" 
+        style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+      >
+        <div className="container py-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Header Card */}
+            <div className="card border-0 shadow-lg rounded-4 mb-4 p-4">
+              <div className="d-flex align-items-center gap-3">
+                <div 
+                  className="d-flex align-items-center justify-content-center rounded-3 shadow-sm"
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  }}
+                >
+                  <FolderKanban size={36} color="white" />
+                </div>
+                <div>
+                  <h1 className="h2 fw-bold mb-1">Project Review</h1>
+                  <p className="text-muted mb-0">Review and approve student projects</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content Card */}
+            <div className="card border-0 shadow-lg rounded-4 overflow-hidden">
+              <Spin spinning={loading}>
+                <Tabs
+                  className="p-4"
+                  items={[
               {
                 key: 'pending',
                 label: `Pending Approval (${pendingProjects.length})`,
@@ -989,6 +1059,7 @@ const Projects = () => {
             ]}
           />
         </Spin>
+            </div>
 
         {/* Project Details Drawer */}
         <Drawer
@@ -1090,6 +1161,8 @@ const Projects = () => {
             </div>
           )}
         </Drawer>
+          </motion.div>
+        </div>
       </div>
     );
   }

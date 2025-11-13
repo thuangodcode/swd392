@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Table, Space, message, Modal, Form, Input, Select, Spin, Tag, Drawer, List, Tabs } from 'antd';
+import { motion } from 'framer-motion';
+import { BookOpen, Plus, Users, Calendar, Clock, MapPin, User } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Courses = () => {
   const { user, refreshUser } = useAuth();
@@ -34,7 +37,7 @@ const Courses = () => {
       const response = await axios.get('/courses/available');
       setCourses(response.data.data || []);
     } catch (error) {
-      message.error('Failed to fetch classes');
+      toast.error('Failed to fetch classes');
     } finally {
       setLoading(false);
     }
@@ -51,7 +54,7 @@ const Courses = () => {
 
   const showCreateModal = () => {
     if (user?.role !== 'moderator') {
-      message.error('Only moderators can create classes');
+      toast.error('Only moderators can create classes');
       return;
     }
     setIsModalVisible(true);
@@ -80,7 +83,7 @@ const Courses = () => {
         endTime: slotTimes.endTime,
         maxStudents: parseInt(values.maxStudents) || 40
       });
-      message.success('Class created successfully');
+      toast.success('Class created successfully');
       setIsModalVisible(false);
       form.resetFields();
       fetchCourses();
@@ -89,15 +92,15 @@ const Courses = () => {
       
       // Display specific error messages based on backend response
       if (errorMessage.includes('conflict')) {
-        message.error(`Schedule Conflict: ${errorMessage}`);
+        toast.error(`Schedule Conflict: ${errorMessage}`);
       } else if (errorMessage.includes('already exists')) {
-        message.error(`Duplicate: ${errorMessage}`);
+        toast.error(`Duplicate: ${errorMessage}`);
       } else if (errorMessage.includes('Invalid')) {
-        message.error(`Invalid Input: ${errorMessage}`);
+        toast.error(`Invalid Input: ${errorMessage}`);
       } else if (errorMessage.includes('required')) {
-        message.error(`Missing Data: ${errorMessage}`);
+        toast.error(`Missing Data: ${errorMessage}`);
       } else {
-        message.error(errorMessage);
+        toast.error(errorMessage);
       }
     }
   };
@@ -105,11 +108,11 @@ const Courses = () => {
   const handleEnroll = async (courseId) => {
     try {
       await axios.post(`/courses/${courseId}/enroll`);
-      message.success('Enrolled successfully');
+      toast.success('Enrolled successfully');
       await refreshUser(); // Refresh user data to update currentClass
       fetchCourses();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to enroll');
+      toast.error(error.response?.data?.message || 'Failed to enroll');
     }
   };
 
@@ -135,11 +138,11 @@ const Courses = () => {
       onOk: async () => {
         try {
           await axios.post(`/courses/${courseId}/switch`);
-          message.success('Switched class successfully');
+          toast.success('Switched class successfully');
           await refreshUser(); // Refresh user data to update currentClass
           fetchCourses();
         } catch (error) {
-          message.error(error.response?.data?.message || 'Failed to switch class');
+          toast.error(error.response?.data?.message || 'Failed to switch class');
         }
       },
     });
@@ -165,7 +168,7 @@ const Courses = () => {
       setClassGroups(groupsRes.data.data || []);
     } catch (error) {
       console.error('Failed to fetch class details:', error);
-      message.error('Failed to load class details');
+      toast.error('Failed to load class details');
     } finally {
       setLoadingDetails(false);
     }
@@ -220,7 +223,7 @@ const Courses = () => {
         },
         maxStudents: parseInt(values.maxStudents) || 40
       });
-      message.success('Class updated successfully');
+      toast.success('Class updated successfully');
       setIsEditModalVisible(false);
       form.resetFields();
       setSelectedCourse(null);
@@ -229,15 +232,15 @@ const Courses = () => {
       const errorMessage = error.response?.data?.message || 'Failed to update class';
       
       if (errorMessage.includes('conflict')) {
-        message.error(`Schedule Conflict: ${errorMessage}`);
+        toast.error(`Schedule Conflict: ${errorMessage}`);
       } else if (errorMessage.includes('already exists')) {
-        message.error(`Duplicate: ${errorMessage}`);
+        toast.error(`Duplicate: ${errorMessage}`);
       } else if (errorMessage.includes('Invalid')) {
-        message.error(`Invalid Input: ${errorMessage}`);
+        toast.error(`Invalid Input: ${errorMessage}`);
       } else if (errorMessage.includes('required')) {
-        message.error(`Missing Data: ${errorMessage}`);
+        toast.error(`Missing Data: ${errorMessage}`);
       } else {
-        message.error(errorMessage);
+        toast.error(errorMessage);
       }
     }
   };
@@ -249,59 +252,56 @@ const Courses = () => {
 
   const columns = [
     {
-      title: 'Course Code',
-      dataIndex: 'courseCode',
-      key: 'courseCode',
-      render: (text) => <strong>{text}</strong>,
-      width: 120
-    },
-    {
-      title: 'Class Code',
-      dataIndex: 'classCode',
-      key: 'classCode',
-      render: (text, record) => (
-        <Space>
-          <Tag color="blue">{text}</Tag>
+      title: 'Class',
+      key: 'class',
+      render: (_, record) => (
+        <div>
+          <div><strong>{record.courseCode}</strong></div>
+          <Tag color="blue" size="small">{record.classCode}</Tag>
           {user?.role === 'lecturer' && record.lecturer?._id === user?.id && (
-            <Tag color="green">My Class</Tag>
+            <Tag color="green" size="small">My Class</Tag>
           )}
-        </Space>
+        </div>
       ),
-      width: 120
+      width: 150
     },
     {
       title: 'Lecturer',
       dataIndex: ['lecturer', 'fullName'],
       key: 'lecturer',
-      width: 150
+      width: 140,
+      ellipsis: true
     },
     {
       title: 'Semester',
       key: 'semester',
-      render: (_, record) => `${record.semester}${record.year}`,
-      width: 120
-    },
-    {
-      title: 'Room',
-      dataIndex: 'room',
-      key: 'room',
-      width: 100
+      render: (_, record) => (
+        <Tag color="purple">{record.semester}{record.year}</Tag>
+      ),
+      width: 110
     },
     {
       title: 'Schedule',
       key: 'schedule',
       render: (_, record) => (
-        <span>
-          {getDayName(record.schedule?.dayOfWeek)} {record.schedule?.startTime}-{record.schedule?.endTime}
-        </span>
+        <div style={{ fontSize: '12px' }}>
+          <div><strong>{getDayName(record.schedule?.dayOfWeek)}</strong></div>
+          <div>{record.schedule?.startTime}-{record.schedule?.endTime}</div>
+          <div className="text-muted">{record.room}</div>
+        </div>
       ),
-      width: 180
+      width: 130
     },
     {
       title: 'Students',
       key: 'students',
-      render: (_, record) => `${record.currentStudents}/${record.maxStudents}`,
-      width: 100
+      render: (_, record) => (
+        <Tag color={record.currentStudents >= record.maxStudents ? 'red' : 'green'}>
+          {record.currentStudents}/{record.maxStudents}
+        </Tag>
+      ),
+      width: 90,
+      align: 'center'
     },
     {
       title: 'Status',
@@ -312,10 +312,11 @@ const Courses = () => {
           {status === 'open' ? 'Open' : 'Closed'}
         </Tag>
       ),
-      width: 100
+      width: 90,
+      align: 'center'
     },
     {
-      title: 'Actions',
+      title: <span style={{ marginLeft: 50 }}>Actions</span>,
       key: 'actions',
       render: (_, record) => {
         const hasCurrentClass = user?.currentClass !== null && user?.currentClass !== undefined;
@@ -323,11 +324,12 @@ const Courses = () => {
         
         if (user?.role === 'student') {
           return (
-            <Space size="small" wrap>
+            <Space direction="vertical" size="small" style={{ width: '100%' }}>
               <Button 
-                type="primary" 
+                type="default" 
                 size="small"
                 onClick={() => handleViewDetails(record)}
+                block
               >
                 Details
               </Button>
@@ -338,47 +340,51 @@ const Courses = () => {
                   size="small"
                   onClick={() => handleEnroll(record._id)}
                   disabled={record.status === 'closed'}
+                  block
                 >
                   Enroll
                 </Button>
               ) : (
                 // Student has a class - show Switch Class for ALL classes
                 <Button 
-                  type="default"
+                  type="primary"
                   size="small"
                   onClick={() => handleSwitchClass(record._id)}
                   disabled={record.status === 'closed' || isThisClass}
+                  block
                 >
-                  {isThisClass ? 'Current Class' : 'Switch Class'}
+                  {isThisClass ? 'Current' : 'Switch'}
                 </Button>
               )}
             </Space>
           );
         } else if (user?.role === 'lecturer') {
           return (
-            <Space size="small">
-              <Button 
-                type="primary" 
-                size="small"
-                onClick={() => handleViewDetails(record)}
-              >
-                Details
-              </Button>
-            </Space>
+            <Button 
+              type="default" 
+              size="small"
+              onClick={() => handleViewDetails(record)}
+              block
+            >
+              Details
+            </Button>
           );
         } else if (user?.role === 'moderator') {
           return (
-            <Space size="small">
+            <Space direction="vertical" size="small" style={{ width: '100%' }}>
               <Button 
-                type="primary" 
+                type="default" 
                 size="small"
                 onClick={() => handleViewDetails(record)}
+                block
               >
                 Details
               </Button>
               <Button 
+                type="primary"
                 size="small"
                 onClick={() => handleEditClick(record)}
+                block
               >
                 Edit
               </Button>
@@ -386,35 +392,66 @@ const Courses = () => {
           );
         }
       },
-      width: 200
+      width: 120,
+      fixed: 'right'
     }
   ];
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Card
-        title={<h2>EXE101 - Class List</h2>}
-        extra={
-          user?.role === 'moderator' && (
-            <Button type="primary" onClick={showCreateModal}>
-              Create New Class
-            </Button>
-          )
-        }
-      >
-        <Spin spinning={loading}>
-          <Table 
-            columns={columns} 
-            dataSource={courses} 
-            rowKey="_id"
-            pagination={{ pageSize: 10 }}
-            scroll={{ x: 1500 }}
-          />
-        </Spin>
-      </Card>
+    <div className="min-vh-100" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <div className="container py-5">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Page Header */}
+          <div className="card border-0 shadow-lg rounded-4 mb-4 p-4">
+            <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+              <div className="d-flex align-items-center gap-3">
+                <div className="d-flex align-items-center justify-content-center rounded-4"
+                  style={{ 
+                    width: '70px', 
+                    height: '70px', 
+                    background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+                    boxShadow: '0 5px 15px rgba(17, 153, 142, 0.4)'
+                  }}>
+                  <BookOpen size={36} color="white" />
+                </div>
+                <div>
+                  <h1 className="h2 fw-bold mb-1">EXE101 - Class List</h1>
+                  <p className="text-muted mb-0">Manage and enroll in classes</p>
+                </div>
+              </div>
+              {user?.role === 'moderator' && (
+                <Button type="primary" size="large" icon={<Plus size={18} />} onClick={showCreateModal}>
+                  Create New Class
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Classes Table */}
+          <div className="card border-0 shadow-sm rounded-4">
+            <div className="card-body p-4">
+              <Spin spinning={loading}>
+                <Table 
+                  columns={columns} 
+                  dataSource={courses} 
+                  rowKey="_id"
+                  pagination={{ 
+                    pageSize: 10,
+                    showTotal: (total) => `Total ${total} classes`
+                  }}
+                />
+              </Spin>
+            </div>
+          </div>
+        </motion.div>
+      </div>
 
       <Modal
-        title="Create New Class"
+        title={<div className="d-flex align-items-center gap-2"><Plus size={20} /> Create New Class</div>}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}

@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (studentId, email, password, fullName, role, studentCourse, major) => {
     setLoading(true);
+    console.log('🔄 Attempting registration with:', { studentId, email, fullName, role, course: studentCourse, major });
     try {
       const response = await axios.post('/auth/register', {
         studentId,
@@ -80,13 +81,16 @@ export const AuthProvider = ({ children }) => {
         course: studentCourse,
         major
       });
-      const { token, user } = response.data;
-      setToken(token);
-      setUser(user);
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log('✅ Registration response:', response.data);
+      // Don't auto-login after registration - user should login manually
+      // const { token, user } = response.data;
+      // setToken(token);
+      // setUser(user);
+      // localStorage.setItem('token', token);
+      // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       return response.data;
     } catch (error) {
+      console.error('❌ Registration failed:', error.response?.data || error);
       throw error.response?.data || { message: 'Registration failed' };
     } finally {
       setLoading(false);

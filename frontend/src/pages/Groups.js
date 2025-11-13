@@ -19,8 +19,11 @@ import {
   Select
 } from 'antd';
 import { PlusOutlined, LogoutOutlined, CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons';
+import { motion } from 'framer-motion';
+import { Users, UserPlus, Crown, LogOut, Check, X, Eye } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Groups = () => {
   const { user, refreshUser } = useAuth();
@@ -67,7 +70,7 @@ const Groups = () => {
       const statusRes = await axios.get('/groups/my/status');
       setMyStatus(statusRes.data.data || {});
     } catch (error) {
-      message.error('Failed to fetch groups');
+      toast.error('Failed to fetch groups');
     } finally {
       setLoading(false);
     }
@@ -78,7 +81,7 @@ const Groups = () => {
       const response = await axios.get('/groups/available/students');
       setAvailableStudents(response.data.data || []);
     } catch (error) {
-      message.error('Failed to fetch available students');
+      toast.error('Failed to fetch available students');
     }
   };
 
@@ -114,7 +117,7 @@ const Groups = () => {
       }
       setGroupsByClass(groupsData);
     } catch (error) {
-      message.error('Failed to fetch classes and groups');
+      toast.error('Failed to fetch classes and groups');
     } finally {
       setLoading(false);
     }
@@ -145,7 +148,7 @@ const Groups = () => {
       const currentCourse = coursesRes.data.data?.find(c => c.classCode === user.currentClass);
 
       if (!currentCourse) {
-        message.error('Course not found');
+        toast.error('Course not found');
         return;
       }
 
@@ -154,13 +157,13 @@ const Groups = () => {
         courseId: currentCourse._id
       });
 
-      message.success('Group created successfully');
+      toast.success('Group created successfully');
       setIsCreateModalVisible(false);
       form.resetFields();
       await refreshUser(); // Refresh user to update currentGroup
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to create group');
+      toast.error(error.response?.data?.message || 'Failed to create group');
     }
   };
 
@@ -170,12 +173,12 @@ const Groups = () => {
         studentId: values.studentId
       });
 
-      message.success('Invitation sent');
+      toast.success('Invitation sent');
       setIsInviteModalVisible(false);
       form.resetFields();
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to send invitation');
+      toast.error(error.response?.data?.message || 'Failed to send invitation');
     }
   };
 
@@ -188,84 +191,84 @@ const Groups = () => {
   const handleAcceptInvite = async (groupId) => {
     try {
       await axios.post(`/groups/${groupId}/accept-invite`);
-      message.success('Joined group successfully');
+      toast.success('Joined group successfully');
       await refreshUser(); // Refresh user to update currentGroup
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to join group');
+      toast.error(error.response?.data?.message || 'Failed to join group');
     }
   };
 
   const handleRejectInvite = async (groupId) => {
     try {
       await axios.post(`/groups/${groupId}/reject-invite`);
-      message.success('Invitation rejected');
+      toast.success('Invitation rejected');
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to reject invitation');
+      toast.error(error.response?.data?.message || 'Failed to reject invitation');
     }
   };
 
   const handleLeaveGroup = async () => {
     try {
       await axios.post(`/groups/${myStatus.currentGroup?._id}/leave`);
-      message.success('Left group successfully');
+      toast.success('Left group successfully');
       await refreshUser(); // Refresh user to update currentGroup
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to leave group');
+      toast.error(error.response?.data?.message || 'Failed to leave group');
     }
   };
 
   const handleRequestJoin = async (groupId) => {
     try {
       await axios.post(`/groups/${groupId}/request`);
-      message.success('Join request sent successfully');
+      toast.success('Join request sent successfully');
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to send request');
+      toast.error(error.response?.data?.message || 'Failed to send request');
     }
   };
 
   const handleCancelRequest = async (groupId) => {
     try {
       await axios.post(`/groups/${groupId}/cancel-request`);
-      message.success('Request cancelled successfully');
+      toast.success('Request cancelled successfully');
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to cancel request');
+      toast.error(error.response?.data?.message || 'Failed to cancel request');
     }
   };
 
   const handleAcceptRequest = async (groupId, userId) => {
     try {
       await axios.post(`/groups/${groupId}/accept-request/${userId}`);
-      message.success('Request accepted successfully');
+      toast.success('Request accepted successfully');
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to accept request');
+      toast.error(error.response?.data?.message || 'Failed to accept request');
     }
   };
 
   const handleRejectRequest = async (groupId, userId) => {
     try {
       await axios.post(`/groups/${groupId}/reject-request/${userId}`);
-      message.success('Request rejected successfully');
+      toast.success('Request rejected successfully');
       fetchGroupsAndStatus();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to reject request');
+      toast.error(error.response?.data?.message || 'Failed to reject request');
     }
   };
 
   const handleInviteStudentDirect = async (studentId) => {
     try {
       if (!myStatus.currentGroup) {
-        message.error('You must be in a group to invite students');
+        toast.error('You must be in a group to invite students');
         return;
       }
 
       if (myStatus.currentGroup.leader?._id !== user.id) {
-        message.error('Only group leader can invite students');
+        toast.error('Only group leader can invite students');
         return;
       }
 
@@ -273,11 +276,11 @@ const Groups = () => {
         studentId: studentId
       });
 
-      message.success('Invitation sent successfully');
+      toast.success('Invitation sent successfully');
       fetchGroupsAndStatus();
       fetchAllStudentsInClass();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Failed to send invitation');
+      toast.error(error.response?.data?.message || 'Failed to send invitation');
     }
   };
 
@@ -701,9 +704,37 @@ const Groups = () => {
   ];
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Spin spinning={loading}>
-        <Tabs
+    <div className="min-vh-100" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <div className="container py-5">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Page Header */}
+          <div className="card border-0 shadow-lg rounded-4 mb-4 p-4">
+            <div className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center justify-content-center rounded-4"
+                style={{ 
+                  width: '70px', 
+                  height: '70px', 
+                  background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                  boxShadow: '0 5px 15px rgba(240, 147, 251, 0.4)'
+                }}>
+                <Users size={36} color="white" />
+              </div>
+              <div>
+                <h1 className="h2 fw-bold mb-1">Group Management</h1>
+                <p className="text-muted mb-0">Manage your groups and collaborations</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Card */}
+          <div className="card border-0 shadow-sm rounded-4">
+            <div className="card-body p-4">
+              <Spin spinning={loading}>
+                <Tabs
           items={[
             {
               key: 'my-group',
@@ -882,7 +913,9 @@ const Groups = () => {
             }
           ]}
         />
-      </Spin>
+              </Spin>
+            </div>
+          </div>
 
       {/* Create Group Modal */}
       <Modal
@@ -1073,6 +1106,8 @@ const Groups = () => {
           </div>
         )}
       </Drawer>
+        </motion.div>
+      </div>
     </div>
   );
 };

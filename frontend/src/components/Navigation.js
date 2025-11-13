@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Menu, Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogoutOutlined } from '@ant-design/icons';
+import { Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const { Header } = Layout;
@@ -17,8 +18,9 @@ const Navigation = () => {
 
   return (
     <Header style={{ background: '#001529', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>
-        EXE101 - Group Management System
+      <div style={{ color: 'white', fontSize: 18, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Shield className="w-10 h-8" style={{ width: '40px', height: '32px' }} />
+        EXE101 Squad Welcomes
       </div>
       {user && (
         <Menu theme="dark" mode="horizontal" style={{ flex: 1, marginLeft: 50 }}>
