@@ -11,9 +11,9 @@ import {
   Drawer,
   Select
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { Users, Plus, User } from 'lucide-react';
+import { Users, Plus } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';

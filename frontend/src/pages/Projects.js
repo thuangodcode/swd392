@@ -4,21 +4,19 @@ import {
   Button,
   Table,
   Space,
-  message,
   Modal,
   Form,
   Input,
   Tag,
-  Tabs,
+  Spin,
   Empty,
   Descriptions,
   Alert,
-  Spin,
   Drawer,
-  Tooltip
+  Tooltip,
+  Tabs
 } from 'antd';
 import {
-  PlusOutlined,
   SendOutlined,
   EditOutlined,
   DeleteOutlined,
@@ -28,10 +26,11 @@ import {
   ExclamationCircleOutlined,
   BulbOutlined,
   ThunderboltOutlined,
-  RobotOutlined
+  RobotOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { FolderKanban, Plus, Sparkles, Eye } from 'lucide-react';
+import { FolderKanban } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLocation } from 'react-router-dom';
