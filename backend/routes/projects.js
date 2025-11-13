@@ -48,7 +48,11 @@ router.post('/', authenticate, authorize('student'), async (req, res) => {
     });
 
     await project.save();
-    await project.populate('group createdBy lecturer', 'groupName fullName email');
+    await project.populate([
+      { path: 'group', select: 'groupName leader members classCode' },
+      { path: 'createdBy', select: 'fullName email studentId' },
+      { path: 'lecturer', select: 'fullName email' }
+    ]);
 
     res.status(201).json({ 
       success: true, 
@@ -192,7 +196,12 @@ router.post('/:id/approve', authenticate, authorize('lecturer'), async (req, res
     project.status = 'in-progress';
     
     await project.save();
-    await project.populate('group createdBy lecturer approvedBy');
+    await project.populate([
+      { path: 'group', select: 'groupName leader members' },
+      { path: 'createdBy', select: 'fullName studentId email' },
+      { path: 'lecturer', select: 'fullName email' },
+      { path: 'approvedBy', select: 'fullName email' }
+    ]);
 
     res.json({ 
       success: true, 
@@ -229,7 +238,12 @@ router.post('/:id/reject', authenticate, authorize('lecturer'), async (req, res)
     project.approvedAt = new Date();
     
     await project.save();
-    await project.populate('group createdBy lecturer approvedBy');
+    await project.populate([
+      { path: 'group', select: 'groupName leader members' },
+      { path: 'createdBy', select: 'fullName studentId email' },
+      { path: 'lecturer', select: 'fullName email' },
+      { path: 'approvedBy', select: 'fullName email' }
+    ]);
 
     res.json({ 
       success: true, 
