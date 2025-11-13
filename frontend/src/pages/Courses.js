@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Table, Space, message, Modal, Form, Input, Select, Spin, Tag, Drawer, List, Tabs } from 'antd';
+import { Button, Table, Space, Modal, Form, Input, Select, Spin, Tag, Drawer, List, Tabs } from 'antd';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Users, Calendar, Clock, MapPin, User } from 'lucide-react';
+import { BookOpen, Plus } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';

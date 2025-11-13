@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Statistic, Row, Col, Button, Tabs, Table, message, Tag, Spin } from 'antd';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button, Spin, Tag, Table } from 'antd';
 import { motion } from 'framer-motion';
 import { User, Mail, BookOpen, Award, Users, GraduationCap, Shield, Calendar, Activity } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -180,7 +179,6 @@ const ModeratorDashboard = ({ user }) => {
   const [classes, setClasses] = useState([]);
   const [stats, setStats] = useState({ totalLecturers: 0, totalClasses: 0, totalStudents: 0 });
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
 
   const fetchStats = async () => {
     setLoading(true);
