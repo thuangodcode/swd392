@@ -1,7 +1,7 @@
 // API Configuration
-// NOTE: Use your computer's IP address (from ipconfig), NOT localhost!
-// Backend still runs on localhost:5000, but mobile needs your local IP
-export const API_BASE_URL = 'http://192.168.1.195:5000/api';
+// NOTE: For Android Emulator, use 10.0.2.2 instead of localhost
+// For physical device, use your computer's IP address
+export const API_BASE_URL = 'http://10.0.2.2:5000/api';
 
 // Student roles
 export const USER_ROLES = {
