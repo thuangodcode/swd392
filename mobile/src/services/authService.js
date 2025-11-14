@@ -1,9 +1,10 @@
 import api from './api';
 
 export const authService = {
-  // Login
-  login: async (studentId, password) => {
-    const response = await api.post('/auth/login', { studentId, password });
+  // Login with email
+  login: async (email, password) => {
+    const response = await api.post('/auth/login', { email, password });
+    console.log('Login response:', JSON.stringify(response.data, null, 2));
     return response.data;
   },
 

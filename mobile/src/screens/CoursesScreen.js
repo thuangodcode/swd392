@@ -161,6 +161,16 @@ const CoursesScreen = ({ navigation }) => {
                 onPress={() => handleLeaveCourse(course._id)}
                 style={styles.actionButton}
               />
+              <Button
+                title="Details"
+                variant="outline"
+                size="small"
+                onPress={() => navigation.navigate('CourseDetails', { 
+                  courseId: course._id,
+                  classCode: course.classCode 
+                })}
+                style={styles.actionButton}
+              />
             </Card>
           ))}
         </View>
@@ -212,6 +222,16 @@ const CoursesScreen = ({ navigation }) => {
                   title="Enroll Now"
                   onPress={() => handleEnroll(course._id)}
                   size="small"
+                  style={styles.actionButton}
+                />
+                <Button
+                  title="Details"
+                  variant="outline"
+                  size="small"
+                  onPress={() => navigation.navigate('CourseDetails', { 
+                    courseId: course._id,
+                    classCode: course.classCode 
+                  })}
                   style={styles.actionButton}
                 />
               </Card>

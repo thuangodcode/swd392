@@ -99,12 +99,92 @@ router.get('/available', async (req, res) => {
   }
 });
 
+// Get all courses (generic endpoint)
+router.get('/', async (req, res) => {
+  try {
+    console.log('Fetching all courses...');
+    
+    // First just get the raw courses
+    const courses = await Course.find().lean();
+    console.log(`Found ${courses.length} courses, raw data:`, JSON.stringify(courses.slice(0, 1), null, 2));
+    
+    // Now try with populate
+    const coursesWithPopulate = await Course.find()
+      .populate('lecturer', 'fullName email studentId')
+      .populate('createdBy', 'fullName email')
+      .populate('enrolledStudents', 'studentId fullName');
+    
+    console.log(`Populated ${coursesWithPopulate.length} courses`);
+    
+    const formattedCourses = coursesWithPopulate.map(course => ({
+      _id: course._id,
+      courseCode: course.courseCode,
+      classCode: course.classCode,
+      courseName: course.courseName,
+      lecturer: course.lecturer,
+      createdBy: course.createdBy,
+      semester: course.semester,
+      year: course.year,
+      room: course.room,
+      schedule: course.schedule,
+      maxStudents: course.maxStudents,
+      currentStudents: course.enrolledStudents ? course.enrolledStudents.length : 0,
+      status: (course.enrolledStudents && course.enrolledStudents.length >= course.maxStudents) ? 'closed' : 'open',
+      enrolledStudents: course.enrolledStudents || []
+    }));
+    
+    console.log('Returning formatted courses:', formattedCourses.length);
+    res.json({ success: true, data: formattedCourses });
+  } catch (error) {
+    console.error('Error fetching courses:', error.message, error.stack);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Get all lecturers (for moderator to select)
 router.get('/lecturers/list', authenticate, authorize('moderator'), async (req, res) => {
   try {
     const lecturers = await User.find({ role: 'lecturer' }).select('_id fullName email studentId');
     res.json({ success: true, data: lecturers });
   } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Get enrolled courses for current student
+router.get('/enrolled', authenticate, async (req, res) => {
+  try {
+    const student = await User.findById(req.userId).select('enrolledClasses');
+    
+    if (!student || !student.enrolledClasses || student.enrolledClasses.length === 0) {
+      return res.json({ success: true, data: [] });
+    }
+
+    const courses = await Course.find({ classCode: { $in: student.enrolledClasses } })
+      .populate('lecturer', 'fullName email studentId')
+      .populate('createdBy', 'fullName email')
+      .populate('enrolledStudents', 'studentId fullName');
+
+    const formattedCourses = courses.map(course => ({
+      _id: course._id,
+      courseCode: course.courseCode,
+      classCode: course.classCode,
+      courseName: course.courseName,
+      lecturer: course.lecturer,
+      createdBy: course.createdBy,
+      semester: course.semester,
+      year: course.year,
+      room: course.room,
+      schedule: course.schedule,
+      maxStudents: course.maxStudents,
+      currentStudents: course.enrolledStudents ? course.enrolledStudents.length : 0,
+      status: (course.enrolledStudents && course.enrolledStudents.length >= course.maxStudents) ? 'closed' : 'open',
+      enrolledStudents: course.enrolledStudents || []
+    }));
+
+    res.json({ success: true, data: formattedCourses });
+  } catch (error) {
+    console.error('Error fetching enrolled courses:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -337,6 +417,48 @@ router.post('/:id/unenroll', authenticate, async (req, res) => {
     }
 
     res.json({ success: true, message: 'Unenrolled successfully', data: course });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Leave course (alias for unenroll)
+router.post('/:id/leave', authenticate, async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Course not found' });
+    }
+
+    course.enrolledStudents = course.enrolledStudents.filter(
+      id => id.toString() !== req.userId
+    );
+    await course.save();
+
+    // Remove classCode from student's currentClass and enrolledClasses
+    const student = await User.findById(req.userId);
+    if (student) {
+      if (student.currentClass === course.classCode) {
+        student.currentClass = null;
+      }
+      student.enrolledClasses = student.enrolledClasses.filter(
+        code => code !== course.classCode
+      );
+      // If student is in a group from this class, remove from group
+      if (student.currentGroup) {
+        const Group = require('../models/Group');
+        const group = await Group.findById(student.currentGroup);
+        if (group && group.classCode === course.classCode) {
+          group.members = group.members.filter(m => m.user.toString() !== req.userId);
+          await group.save();
+          student.currentGroup = null;
+        }
+      }
+      await student.save();
+    }
+
+    res.json({ success: true, message: 'Left course successfully', data: course });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

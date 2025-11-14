@@ -33,12 +33,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (studentId, password) => {
+  const login = async (email, password) => {
     try {
-      const response = await authService.login(studentId, password);
+      const response = await authService.login(email, password);
+      console.log('AuthContext login response:', JSON.stringify(response, null, 2));
       
       if (response.success) {
-        const { token, user: userData } = response.data;
+        const { token, user: userData } = response;
+        console.log('Extracted userData:', JSON.stringify(userData, null, 2));
         
         // Save to storage
         await AsyncStorage.multiSet([
@@ -67,7 +69,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.register(userData);
       
       if (response.success) {
-        const { token, user: newUser } = response.data;
+        const { token, user: newUser } = response;
         
         // Save to storage
         await AsyncStorage.multiSet([
@@ -117,8 +119,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.getProfile();
       if (response.success) {
-        await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data));
-        setUser(response.data);
+        await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user));
+        setUser(response.user);
         return { success: true };
       }
       return { success: false };

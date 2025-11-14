@@ -46,8 +46,8 @@ const ProfileScreen = ({ navigation }) => {
     {
       title: 'Personal Information',
       items: [
-        { label: 'Student ID', value: user?.studentId },
-        { label: 'Full Name', value: user?.fullName },
+        { label: 'Student ID', value: user?.studentId || 'N/A' },
+        { label: 'Full Name', value: user?.fullName || 'N/A' },
         { label: 'Email', value: user?.email },
         { label: 'Role', value: getRoleLabel(user?.role) }
       ]

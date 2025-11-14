@@ -16,7 +16,7 @@ import { COLORS } from '../utils/constants';
 
 const LoginScreen = ({ navigation }) => {
   const { login } = useAuth();
-  const [studentId, setStudentId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -24,8 +24,10 @@ const LoginScreen = ({ navigation }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!studentId.trim()) {
-      newErrors.studentId = 'Student ID is required';
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!password) {
@@ -45,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
 
     setLoading(true);
     try {
-      const result = await login(studentId.trim(), password);
+      const result = await login(email.trim(), password);
       
       if (result.success) {
         // Navigation will be handled automatically by AuthContext
@@ -75,15 +77,16 @@ const LoginScreen = ({ navigation }) => {
 
         <View style={styles.form}>
           <Input
-            label="Student ID"
-            placeholder="Enter your student ID"
-            value={studentId}
+            label="Email"
+            placeholder="Enter your email"
+            value={email}
             onChangeText={(text) => {
-              setStudentId(text);
-              if (errors.studentId) setErrors({ ...errors, studentId: null });
+              setEmail(text);
+              if (errors.email) setErrors({ ...errors, email: null });
             }}
-            error={errors.studentId}
+            error={errors.email}
             autoCapitalize="none"
+            keyboardType="email-address"
           />
 
           <Input

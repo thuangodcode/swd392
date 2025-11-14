@@ -6,8 +6,10 @@ import { COLORS } from '../utils/constants';
 // Screens
 import DashboardScreen from '../screens/DashboardScreen';
 import GroupsScreen from '../screens/GroupsScreen';
+import CreateGroupScreen from '../screens/CreateGroupScreen';
 import ProjectsScreen from '../screens/ProjectsScreen';
 import CoursesScreen from '../screens/CoursesScreen';
+import CourseDetailsScreen from '../screens/CourseDetailsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -52,6 +54,11 @@ const GroupsStack = () => (
       component={GroupsScreen}
       options={{ title: 'My Groups' }}
     />
+    <Stack.Screen 
+      name="CreateGroup" 
+      component={CreateGroupScreen}
+      options={{ title: 'Create Group' }}
+    />
   </Stack.Navigator>
 );
 
@@ -93,6 +100,11 @@ const CoursesStack = () => (
       name="CoursesMain" 
       component={CoursesScreen}
       options={{ title: 'Courses' }}
+    />
+    <Stack.Screen 
+      name="CourseDetails" 
+      component={CourseDetailsScreen}
+      options={({ route }) => ({ title: route.params?.classCode || 'Course Details' })}
     />
   </Stack.Navigator>
 );

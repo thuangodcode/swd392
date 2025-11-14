@@ -89,7 +89,7 @@ const DashboardScreen = ({ navigation }) => {
       <Card style={styles.infoCard}>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Student ID</Text>
-          <Text style={styles.infoValue}>{user?.studentId}</Text>
+          <Text style={styles.infoValue}>{user?.studentId || 'N/A'}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.infoRow}>
