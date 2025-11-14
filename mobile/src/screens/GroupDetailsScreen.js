@@ -42,7 +42,9 @@ const GroupDetailsScreen = ({ route, navigation }) => {
   };
 
   const isLeader = group?.leader?._id === user?.id || group?.leader?.id === user?.id;
-  const isMember = group?.members.some(m => m.user?._id === user?.id || m.user?.id === user?.id);
+  const isMember = group?.members && Array.isArray(group.members) 
+    ? group.members.some(m => m.user?._id === user?.id || m.user?.id === user?.id)
+    : false;
 
   if (loading) {
     return (
@@ -91,7 +93,7 @@ const GroupDetailsScreen = ({ route, navigation }) => {
         <Text style={styles.sectionTitle}>Group Information</Text>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Total Members:</Text>
-          <Text style={styles.infoValue}>{group.members.length}/5</Text>
+          <Text style={styles.infoValue}>{(group.members || []).length}/5</Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Status:</Text>
@@ -112,9 +114,9 @@ const GroupDetailsScreen = ({ route, navigation }) => {
         <Text style={styles.sectionTitle}>Leader</Text>
         <View style={styles.memberCard}>
           <View style={styles.memberInfo}>
-            <Text style={styles.memberName}>{group.leader.fullName}</Text>
-            <Text style={styles.memberId}>ID: {group.leader.studentId}</Text>
-            {group.leader.email && (
+            <Text style={styles.memberName}>{group.leader?.fullName || 'Unknown'}</Text>
+            <Text style={styles.memberId}>ID: {group.leader?.studentId || 'N/A'}</Text>
+            {group.leader?.email && (
               <Text style={styles.memberEmail}>{group.leader.email}</Text>
             )}
           </View>
@@ -125,15 +127,15 @@ const GroupDetailsScreen = ({ route, navigation }) => {
       </Card>
 
       {/* Members Section */}
-      {group.members.length > 0 && (
+      {(group.members || []).length > 0 && (
         <Card>
-          <Text style={styles.sectionTitle}>Members ({group.members.length})</Text>
-          {group.members.map((member, index) => (
+          <Text style={styles.sectionTitle}>Members ({(group.members || []).length})</Text>
+          {(group.members || []).map((member, index) => (
             <View key={index} style={styles.memberCard}>
               <View style={styles.memberInfo}>
-                <Text style={styles.memberName}>{member.user.fullName}</Text>
-                <Text style={styles.memberId}>ID: {member.user.studentId}</Text>
-                {member.user.email && (
+                <Text style={styles.memberName}>{member.user?.fullName || 'Unknown'}</Text>
+                <Text style={styles.memberId}>ID: {member.user?.studentId || 'N/A'}</Text>
+                {member.user?.email && (
                   <Text style={styles.memberEmail}>{member.user.email}</Text>
                 )}
               </View>

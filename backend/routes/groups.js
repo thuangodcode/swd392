@@ -50,17 +50,27 @@ router.get('/:id', authenticate, async (req, res) => {
     console.log('Fetching group by ID:', req.params.id);
     
     const group = await Group.findById(req.params.id)
-      .populate('leader', 'fullName studentId email')
-      .populate('members.user', 'fullName studentId email')
-      .populate('course', 'courseName courseCode');
+      .populate({
+        path: 'leader',
+        select: 'fullName studentId email'
+      })
+      .populate({
+        path: 'members.user',
+        select: 'fullName studentId email'
+      })
+      .populate({
+        path: 'course',
+        select: 'courseName courseCode'
+      });
 
     if (!group) {
       return res.status(404).json({ success: false, message: 'Group not found' });
     }
 
+    console.log('Group found:', group);
     res.json({ success: true, data: group });
   } catch (error) {
-    console.error('Error fetching group details:', error);
+    console.error('Error fetching group details:', error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 });
