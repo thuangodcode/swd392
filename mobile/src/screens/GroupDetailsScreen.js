@@ -162,11 +162,11 @@ const GroupDetailsScreen = ({ route, navigation }) => {
         {isLeader && (
           <Button
             title="Manage Group"
-            onPress={() => navigation.navigate('EditGroup', { groupId })}
+            onPress={() => navigation.navigate('ManageGroup', { groupId })}
             style={styles.primaryButton}
           />
         )}
-        {!isLeader && !isMember && group.status === 'open' && (
+        {user?.role === 'student' && !isLeader && !isMember && group.status === 'open' && (
           <Button
             title="Request to Join"
             onPress={() => {
@@ -190,6 +190,11 @@ const GroupDetailsScreen = ({ route, navigation }) => {
             }}
             style={styles.primaryButton}
           />
+        )}
+        {user?.currentGroup && isLeader && (
+          <Text style={styles.infoText}>
+            ℹ️ Group leaders cannot join other groups
+          </Text>
         )}
         <Button
           title="Back"
@@ -331,6 +336,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: COLORS.text,
+  },
+  infoText: {
+    fontSize: 13,
+    color: COLORS.info,
+    textAlign: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 12,
   },
   actionSection: {
     marginTop: 16,

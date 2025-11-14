@@ -8,6 +8,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import GroupsScreen from '../screens/GroupsScreen';
 import CreateGroupScreen from '../screens/CreateGroupScreen';
 import GroupDetailsScreen from '../screens/GroupDetailsScreen';
+import ManageGroupScreen from '../screens/ManageGroupScreen';
 import ProjectsScreen from '../screens/ProjectsScreen';
 import CoursesScreen from '../screens/CoursesScreen';
 import CourseDetailsScreen from '../screens/CourseDetailsScreen';
@@ -64,6 +65,11 @@ const GroupsStack = () => (
       name="GroupDetails" 
       component={GroupDetailsScreen}
       options={({ route }) => ({ title: route.params?.groupName || 'Group Details' })}
+    />
+    <Stack.Screen 
+      name="ManageGroup" 
+      component={ManageGroupScreen}
+      options={{ title: 'Manage Group' }}
     />
   </Stack.Navigator>
 );
