@@ -16,14 +16,21 @@ import Loading from '../components/Loading';
 import { COLORS } from '../utils/constants';
 
 const GroupsScreen = ({ navigation }) => {
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchGroups();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Refresh user data when screen is focused
+      refreshProfile().then(() => {
+        fetchGroups();
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const fetchGroups = async () => {
     if (!user?.currentClass) {
@@ -46,7 +53,7 @@ const GroupsScreen = ({ navigation }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchGroups();
+    await refreshProfile();
     setRefreshing(false);
   };
 
@@ -88,13 +95,13 @@ const GroupsScreen = ({ navigation }) => {
   }
 
   const myGroup = groups.find(g => 
-    g.leader._id === user._id || 
-    g.members.some(m => m.user._id === user._id)
+    g.leader?._id === user?._id || 
+    g.members.some(m => m.user?._id === user?._id)
   );
 
   const otherGroups = groups.filter(g => 
-    g.leader._id !== user._id && 
-    !g.members.some(m => m.user._id === user._id) &&
+    g.leader?._id !== user?._id && 
+    !g.members.some(m => m.user?._id === user?._id) &&
     g.status === 'open'
   );
 

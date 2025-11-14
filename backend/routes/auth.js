@@ -148,6 +148,7 @@ router.get('/me', authenticate, async (req, res) => {
         role: user.role,
         course: user.course,
         currentClass: user.currentClass,
+        currentGroup: user.currentGroup,
         major: user.major,
         phone: user.phone
       }
