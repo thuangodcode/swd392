@@ -50,14 +50,14 @@ export const groupService = {
   },
 
   // Accept join request (leader only)
-  acceptRequest: async (groupId, requestId) => {
-    const response = await api.post(`/groups/${groupId}/accept-request`, { requestId });
+  acceptRequest: async (groupId, userId) => {
+    const response = await api.post(`/groups/${groupId}/accept-request/${userId}`);
     return response.data;
   },
 
   // Reject join request (leader only)
-  rejectRequest: async (groupId, requestId) => {
-    const response = await api.post(`/groups/${groupId}/reject-request`, { requestId });
+  rejectRequest: async (groupId, userId) => {
+    const response = await api.post(`/groups/${groupId}/reject-request/${userId}`);
     return response.data;
   },
 

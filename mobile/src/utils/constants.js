@@ -1,7 +1,7 @@
 // API Configuration
 // NOTE: For Android Emulator, use 10.0.2.2 instead of localhost
 // For physical device, use your computer's IP address
-export const API_BASE_URL = 'http://10.0.2.2:5000/api';
+export const API_BASE_URL = 'http://10.87.44.204:5000/api';
 
 // Student roles
 export const USER_ROLES = {

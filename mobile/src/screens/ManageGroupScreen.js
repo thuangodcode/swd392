@@ -137,8 +137,8 @@ const ManageGroupScreen = ({ route, navigation }) => {
         {pendingRequests.length === 0 ? (
           <Text style={styles.emptyText}>No pending requests</Text>
         ) : (
-          pendingRequests.map((request) => (
-            <View key={request.user?._id} style={styles.requestCard}>
+          pendingRequests.map((request, index) => (
+            <View key={`${request.user?._id}-${index}`} style={styles.requestCard}>
               <View style={styles.userInfo}>
                 <Text style={styles.userName}>{request.user?.fullName}</Text>
                 <Text style={styles.userId}>ID: {request.user?.studentId}</Text>
@@ -190,8 +190,8 @@ const ManageGroupScreen = ({ route, navigation }) => {
         {currentMembers.length === 0 ? (
           <Text style={styles.emptyText}>No other members</Text>
         ) : (
-          currentMembers.map((member) => (
-            <View key={member.user?._id} style={styles.memberCard}>
+          currentMembers.map((member, index) => (
+            <View key={`${member.user?._id}-${index}`} style={styles.memberCard}>
               <View style={styles.userInfo}>
                 <Text style={styles.userName}>{member.user?.fullName}</Text>
                 <Text style={styles.userId}>ID: {member.user?.studentId}</Text>

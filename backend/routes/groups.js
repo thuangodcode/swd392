@@ -59,6 +59,10 @@ router.get('/:id', authenticate, async (req, res) => {
         select: 'fullName studentId email'
       })
       .populate({
+        path: 'pendingRequests.user',
+        select: 'fullName studentId email'
+      })
+      .populate({
         path: 'course',
         select: 'courseName courseCode'
       });
