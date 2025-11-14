@@ -24,13 +24,19 @@ const GroupsScreen = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Refresh user data when screen is focused
-      refreshProfile().then(() => {
-        fetchGroups();
-      });
+      (async () => {
+        await refreshProfile();
+        // fetchGroups will run again automatically due to user change
+      })();
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, refreshProfile]);
+
+  useEffect(() => {
+    // Run whenever user changes
+    fetchGroups();
+  }, [user?.currentClass, user?._id]);
 
   const fetchGroups = async () => {
     if (!user?.currentClass) {
@@ -54,6 +60,7 @@ const GroupsScreen = ({ navigation }) => {
   const onRefresh = async () => {
     setRefreshing(true);
     await refreshProfile();
+    await fetchGroups();
     setRefreshing(false);
   };
 
