@@ -118,6 +118,16 @@ const CoursesStack = () => (
       component={CourseDetailsScreen}
       options={({ route }) => ({ title: route.params?.classCode || 'Course Details' })}
     />
+    <Stack.Screen 
+      name="GroupDetails" 
+      component={GroupDetailsScreen}
+      options={({ route }) => ({ title: route.params?.groupName || 'Group Details' })}
+    />
+    <Stack.Screen 
+      name="ManageGroup" 
+      component={ManageGroupScreen}
+      options={{ title: 'Manage Group' }}
+    />
   </Stack.Navigator>
 );
 
