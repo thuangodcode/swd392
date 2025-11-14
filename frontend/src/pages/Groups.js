@@ -289,26 +289,22 @@ const Groups = () => {
       {
         title: 'Group Name',
         dataIndex: 'groupName',
-        key: 'groupName',
-        width: 200
+        key: 'groupName'
       },
       {
         title: 'Leader',
         key: 'leader',
-        width: 180,
         render: (_, record) => record.leader?.fullName || 'N/A'
       },
       {
         title: 'Members',
         key: 'members',
-        width: 100,
         render: (_, record) => `${record.members?.length || 0}/5`
       },
       {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
-        width: 100,
         render: (status) => (
           <Tag color={status === 'open' ? 'blue' : 'red'}>
             {status?.toUpperCase()}
@@ -318,7 +314,6 @@ const Groups = () => {
       {
         title: 'Actions',
         key: 'actions',
-        width: 120,
         render: (_, record) => (
           <Button
             type="primary"
@@ -333,38 +328,73 @@ const Groups = () => {
     ];
 
     return (
-      <div style={{ padding: '20px' }}>
-        <Card title={<h2>Groups by Class - {user?.fullName}</h2>}>
-          <Spin spinning={loading}>
-            {lecturerClasses.length === 0 ? (
-              <Empty description="You are not teaching any classes yet" />
-            ) : (
-              <Tabs
-                items={lecturerClasses.map(classItem => ({
-                  key: classItem.classCode,
-                  label: `${classItem.classCode} (${groupsByClass[classItem.classCode]?.length || 0} groups)`,
-                  children: (
-                    <div>
-                      <div style={{ marginBottom: '16px' }}>
-                        <p><strong>Course:</strong> {classItem.courseCode}</p>
-                        <p><strong>Semester:</strong> {classItem.semester} {classItem.year}</p>
-                        <p><strong>Room:</strong> {classItem.room}</p>
-                        <p><strong>Students:</strong> {classItem.currentStudents || classItem.enrolledStudents?.length || 0}/{classItem.maxStudents}</p>
-                      </div>
-                      <Table
-                        columns={lecturerGroupColumns}
-                        dataSource={groupsByClass[classItem.classCode] || []}
-                        rowKey="_id"
-                        pagination={{ pageSize: 10 }}
-                        locale={{ emptyText: 'No groups in this class yet' }}
-                      />
-                    </div>
-                  )
-                }))}
-              />
-            )}
-          </Spin>
-        </Card>
+      <div className="min-vh-100" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+        <div className="container py-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Page Header */}
+            <div className="card border-0 shadow-lg rounded-4 mb-4 p-4">
+              <div className="d-flex align-items-center gap-3">
+                <div className="d-flex align-items-center justify-content-center rounded-4"
+                  style={{ 
+                    width: '70px', 
+                    height: '70px', 
+                    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    boxShadow: '0 5px 15px rgba(240, 147, 251, 0.4)'
+                  }}>
+                  <Users size={36} color="white" />
+                </div>
+                <div>
+                  <h1 className="h2 fw-bold mb-1">Group Management</h1>
+                  <p className="text-muted mb-0">Monitor and manage student groups by class</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content Card */}
+            <div className="card border-0 shadow-sm rounded-4">
+              <div className="card-body p-4">
+                <Spin spinning={loading}>
+                  {lecturerClasses.length === 0 ? (
+                    <Empty description="You are not teaching any classes yet" />
+                  ) : (
+                    <Tabs
+                      items={lecturerClasses.map(classItem => ({
+                        key: classItem.classCode,
+                        label: `${classItem.classCode} (${groupsByClass[classItem.classCode]?.length || 0} groups)`,
+                        children: (
+                          <div>
+                            {/* Class Info */}
+                            <Card style={{ marginBottom: '16px' }}>
+                              <div style={{ marginBottom: '16px' }}>
+                                <p><strong>Course:</strong> {classItem.courseCode}</p>
+                                <p><strong>Semester:</strong> {classItem.semester} {classItem.year}</p>
+                                <p><strong>Room:</strong> {classItem.room}</p>
+                                <p><strong>Students:</strong> {classItem.currentStudents || classItem.enrolledStudents?.length || 0}/{classItem.maxStudents}</p>
+                              </div>
+                            </Card>
+
+                            {/* Groups Table */}
+                            <Table
+                              columns={lecturerGroupColumns}
+                              dataSource={groupsByClass[classItem.classCode] || []}
+                              rowKey="_id"
+                              pagination={{ pageSize: 10 }}
+                              locale={{ emptyText: 'No groups in this class yet' }}
+                            />
+                          </div>
+                        )
+                      }))}
+                    />
+                  )}
+                </Spin>
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
         {/* Group Details Drawer for Lecturer */}
         <Drawer

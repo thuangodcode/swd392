@@ -466,7 +466,7 @@ const Students = () => {
                   <p><strong>Student ID:</strong> {selectedStudent.studentId}</p>
                   <p><strong>Full Name:</strong> {selectedStudent.fullName}</p>
                   <p><strong>Email:</strong> {selectedStudent.email}</p>
-                  <p><strong>Phone:</strong> {selectedStudent.phone || 'N/A'}</p>
+                  {/* <p><strong>Phone:</strong> {selectedStudent.phone || 'N/A'}</p> */}
                   <p><strong>Major:</strong> {selectedStudent.major || 'N/A'}</p>
                   <p><strong>Course (Cohort):</strong> {selectedStudent.course || 'N/A'}</p>
                 </Card>

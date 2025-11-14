@@ -30,12 +30,16 @@ const Navigation = () => {
           <Menu.Item key="courses">
             <Link to="/courses">Classes</Link>
           </Menu.Item>
-          <Menu.Item key="groups">
-            <Link to="/groups">Groups</Link>
-          </Menu.Item>
-          <Menu.Item key="projects">
-            <Link to="/projects">Projects</Link>
-          </Menu.Item>
+          {user.role !== 'moderator' && (
+            <>
+              <Menu.Item key="groups">
+                <Link to="/groups">Groups</Link>
+              </Menu.Item>
+              <Menu.Item key="projects">
+                <Link to="/projects">Projects</Link>
+              </Menu.Item>
+            </>
+          )}
           {user.role === 'moderator' && (
             <>
               <Menu.Item key="lecturers">
