@@ -47,6 +47,12 @@ const GroupsScreen = ({ navigation }) => {
     try {
       const response = await groupService.getPublicGroupsByClass(user.currentClass);
       if (response.success) {
+        console.log('Groups from API:', JSON.stringify(response.data, null, 2));
+        console.log('Current user for matching:', {
+          id: user?.id || user?._id,
+          _id: user?._id,
+          currentGroup: user?.currentGroup
+        });
         setGroups(response.data || []);
       }
     } catch (error) {
@@ -101,16 +107,49 @@ const GroupsScreen = ({ navigation }) => {
     );
   }
 
-  const myGroup = groups.find(g => 
-    g.leader?._id === user?._id || 
-    g.members.some(m => m.user?._id === user?._id)
-  );
+  const myGroup = groups.find(g => {
+    const userId = user?.id || user?._id;
+    const groupId = user?.currentGroup;
+    
+    // Match by group ID from currentGroup field
+    if (groupId && g._id === groupId) {
+      console.log('✅ Found group by currentGroup ID match');
+      return true;
+    }
+    
+    // Match by leader ID
+    if (g.leader?._id === userId || g.leader?.id === userId) {
+      console.log('✅ Found group by leader match:', g.leader?._id, '===', userId);
+      return true;
+    }
+    
+    // Match by member
+    if (g.members.some(m => m.user?._id === userId || m.user?.id === userId)) {
+      console.log('✅ Found group by member match');
+      return true;
+    }
+    
+    console.log('❌ Group not matched:', {
+      groupId: g._id,
+      leaderId: g.leader?._id,
+      membersCount: g.members.length,
+      searchUserId: userId
+    });
+    return false;
+  });
 
-  const otherGroups = groups.filter(g => 
-    g.leader?._id !== user?._id && 
-    !g.members.some(m => m.user?._id === user?._id) &&
-    g.status === 'open'
-  );
+  const otherGroups = groups.filter(g => {
+    const userId = user?.id || user?._id;
+    const groupId = user?.currentGroup;
+    
+    // Exclude my group
+    if (groupId && g._id === groupId) return false;
+    if (g.leader?._id === userId || g.leader?.id === userId) return false;
+    if (g.members.some(m => m.user?._id === userId || m.user?.id === userId)) return false;
+    
+    // Only show open groups
+    return g.status === 'open';
+  });
 
   return (
     <ScrollView

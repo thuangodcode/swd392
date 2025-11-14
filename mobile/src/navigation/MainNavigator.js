@@ -7,6 +7,7 @@ import { COLORS } from '../utils/constants';
 import DashboardScreen from '../screens/DashboardScreen';
 import GroupsScreen from '../screens/GroupsScreen';
 import CreateGroupScreen from '../screens/CreateGroupScreen';
+import GroupDetailsScreen from '../screens/GroupDetailsScreen';
 import ProjectsScreen from '../screens/ProjectsScreen';
 import CoursesScreen from '../screens/CoursesScreen';
 import CourseDetailsScreen from '../screens/CourseDetailsScreen';
@@ -58,6 +59,11 @@ const GroupsStack = () => (
       name="CreateGroup" 
       component={CreateGroupScreen}
       options={{ title: 'Create Group' }}
+    />
+    <Stack.Screen 
+      name="GroupDetails" 
+      component={GroupDetailsScreen}
+      options={({ route }) => ({ title: route.params?.groupName || 'Group Details' })}
     />
   </Stack.Navigator>
 );
