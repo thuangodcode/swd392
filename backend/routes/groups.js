@@ -44,6 +44,24 @@ router.get('/class/:classCode/public', authenticate, async (req, res) => {
   }
 });
 
+// Get group details by ID
+router.get('/:id', authenticate, async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id)
+      .populate('leader', 'fullName studentId email')
+      .populate('members.user', 'fullName studentId email')
+      .populate('course', 'courseName courseCode');
+
+    if (!group) {
+      return res.status(404).json({ success: false, message: 'Group not found' });
+    }
+
+    res.json({ success: true, data: group });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Create group
 router.post('/', authenticate, authorize('student'), async (req, res) => {
   try {
