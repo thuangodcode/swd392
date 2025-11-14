@@ -98,12 +98,6 @@ const ProfileScreen = ({ navigation }) => {
       {/* Action Buttons */}
       <View style={styles.actions}>
         <Button
-          title="Edit Profile"
-          variant="outline"
-          onPress={() => navigation.navigate('EditProfile')}
-          style={styles.actionButton}
-        />
-        <Button
           title="Logout"
           variant="danger"
           onPress={handleLogout}
