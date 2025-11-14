@@ -34,6 +34,7 @@ const GroupDetailsScreen = ({ route, navigation }) => {
       }
     } catch (error) {
       console.error('Error fetching group details:', error);
+      console.error('Error response:', error.response?.data);
       Alert.alert('Error', error.response?.data?.message || 'Failed to load group details');
     } finally {
       setLoading(false);

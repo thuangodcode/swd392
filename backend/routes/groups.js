@@ -47,6 +47,8 @@ router.get('/class/:classCode/public', authenticate, async (req, res) => {
 // Get group details by ID
 router.get('/:id', authenticate, async (req, res) => {
   try {
+    console.log('Fetching group by ID:', req.params.id);
+    
     const group = await Group.findById(req.params.id)
       .populate('leader', 'fullName studentId email')
       .populate('members.user', 'fullName studentId email')
@@ -58,6 +60,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
     res.json({ success: true, data: group });
   } catch (error) {
+    console.error('Error fetching group details:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
