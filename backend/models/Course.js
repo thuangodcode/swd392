@@ -102,12 +102,12 @@ courseSchema.index({ 'schedule.dayOfWeek': 1, 'schedule.startTime': 1, room: 1 }
 
 // Virtual: number of current students
 courseSchema.virtual('currentStudents').get(function() {
-  return this.enrolledStudents.length;
+  return (this.enrolledStudents || []).length;
 });
 
 // Virtual: check if full
 courseSchema.virtual('isFull').get(function() {
-  return this.enrolledStudents.length >= this.maxStudents;
+  return (this.enrolledStudents || []).length >= this.maxStudents;
 });
 
 // Pre-save: update status when full
