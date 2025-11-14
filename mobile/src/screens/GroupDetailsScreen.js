@@ -45,6 +45,9 @@ const GroupDetailsScreen = ({ route, navigation }) => {
   const isMember = group?.members && Array.isArray(group.members) 
     ? group.members.some(m => m.user?._id === user?.id || m.user?.id === user?.id)
     : false;
+  
+  // User is already in a group (either as leader or member)
+  const isInAGroup = user?.currentGroup && user.currentGroup !== group?._id;
 
   if (loading) {
     return (
@@ -166,7 +169,7 @@ const GroupDetailsScreen = ({ route, navigation }) => {
             style={styles.primaryButton}
           />
         )}
-        {user?.role === 'student' && !isLeader && !isMember && group.status === 'open' && (
+        {!isLeader && !isMember && !isInAGroup && group.status === 'open' && (
           <Button
             title="Request to Join"
             onPress={() => {
@@ -191,9 +194,9 @@ const GroupDetailsScreen = ({ route, navigation }) => {
             style={styles.primaryButton}
           />
         )}
-        {user?.currentGroup && isLeader && (
+        {isInAGroup && (
           <Text style={styles.infoText}>
-            ℹ️ Group leaders cannot join other groups
+            ℹ️ You're already in a group. Leave it first to join another.
           </Text>
         )}
         <Button
